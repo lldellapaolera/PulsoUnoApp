@@ -35,7 +35,7 @@ El proyecto implementa una arquitectura desacoplada basada en el patrón **MVC (
 
 ## 📂 Estructura del Proyecto
 
-
+```text
 kumbiaphp/
 ├── default/
 │   └── app/
