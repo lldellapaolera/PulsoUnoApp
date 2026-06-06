@@ -1,0 +1,59 @@
+ <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-login {
+            border-radius: 24px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .btn-uno {
+            background-color: #0096d6;
+            border-color: #0096d6;
+            color: #fff;
+        }
+
+        .btn-uno:hover, .btn-uno:active {
+            background-color: #007bb0 !important;
+            border-color: #007bb0 !important;
+            color: #fff;    
+        }
+        .form-control:focus {
+            border-color: #0096d6;
+            box-shadow: 0 0 0 0.25rem rgba(0, 150, 214, 0.25);
+        }
+    </style>
+
+<div class="card card-login bg-white">
+            <div class="card-body p-4">
+                
+                    <?php View::content(); ?>
+                
+                
+                <form action="<?= PUBLIC_PATH.'login'?>" method="POST">
+                    
+                    <div class="mb-3">
+                        <label for="legajo" class="form-label small fw-semibold text-secondary">Legajo / Documento</label>
+                        <?= Form::text('usuario.legajo', array('class' => 'form-control form-control-lg rounded-3 fs-6', 'placeholder' => 'Ej: UNO-1234', 'required' => true, 'autofocus' => true)) ?>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label small fw-semibold text-secondary">Contraseña</label>
+                        <?= Form::password('usuario.password', array('class' => 'form-control form-control-lg rounded-3 fs-6', 'placeholder' => '••••••••', 'required' => true)) ?>
+                    </div>
+
+                    <button type="submit" class="btn btn-uno w-100 rounded-3 py-2.5 fs-6 shadow-sm">
+                        Sign In
+                    </button>
+                    
+                </form>
+
+            </div>
+        </div>

@@ -1,0 +1,59 @@
+:root {
+            --uno-azul: #0096d6; /* El color exacto del logo UNO-logo-web.png */
+            --uno-oscuro: #111827;
+            --uno-gris-claro: #f3f4f6;
+        }
+
+        body {
+            background-color: var(--uno-gris-claro);
+            color: var(--uno-oscuro);
+            font-family: system-ui, -apple-system, sans-serif;
+            padding-bottom: 75px; /* Espacio de seguridad para la barra inferior */
+        }
+
+        /* Encabezado superior fijo y sobrio */
+        .navbar-superior {
+            background-color: #ffffff;
+            border-bottom: 3px solid var(--uno-azul);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .logo-uno {
+            height: 38px;
+            width: auto;
+        }
+
+        .badge-entorno {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+        }
+
+        /* Barra de navegación inferior Mobile-First (Estilo App Nativa) */
+        .nav-inferior {
+            background-color: #ffffff;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            height: 65px;
+        }
+
+        .nav-inferior .nav-link {
+            color: #6b7280;
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 0;
+        }
+
+        .nav-inferior .nav-link.active, 
+        .nav-inferior .nav-link:hover {
+            color: var(--uno-azul) !important;
+            font-weight: 600;
+        }
+
+        .nav-inferior .icon-wrapper {
+            font-size: 1.3rem;
+            margin-bottom: 2px;
+        }

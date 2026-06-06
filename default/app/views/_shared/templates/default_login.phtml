@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="<?= APP_CHARSET ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso - PulsoUno UNO</title>
+    <link rel="icon" href="<?= PUBLIC_PATH.'img/favicon.ico?v=1' ?>" type="image/x-icon">
+   
+    <?= Tag::css('bootstrap.min') ?>
+    <?php echo Html::includeCss() ?>
+</head>
+<body>
+
+<div class="container login-container px-3">
+    <div class="w-100" style="max-width: 400px;">
+        
+        <div class="text-center mb-4">
+            <img src="<?= PUBLIC_PATH.'img/logo.jpg' ?>" alt="UNO Logo" style="height: 65px; width: auto;" class="mb-2">
+            <h4 class="fw-bold text-dark mb-1">PulsoUno</h4>
+            <p class="text-secondary small">Iniciá sesión con tus datos universitarios</p>
+        </div>
+
+        <?php View::content(); // Aquí se renderizan los mensajes de Flash::error() o Flash::valid() ?>
+
+        
+
+        <div class="text-center mt-4">
+            <span class="text-muted" style="font-size: 0.75rem;">Universidad Nacional del Oeste &copy; 2026</span>
+        </div>
+
+    </div>
+</div>
+
+    <?= Tag::js('bootstrap.bundle.min') ?>    
+    <!-- Script de inicialización de la PWA (Registro del Service Worker) -->
+     <?= Tag::js('app') ?>
+    <!-- <script src="<?php //echo PUBLIC_PATH ?>js/app.js"></script> -->
+
+</body>
+</html>

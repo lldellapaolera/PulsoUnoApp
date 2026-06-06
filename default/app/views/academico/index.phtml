@@ -1,0 +1,120 @@
+<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+    <div class="card-body p-4">
+        <h5 class="fw-bold mb-3" style="color: #111827;">📊 Tu Presentismo Actual</h5>
+        
+        <?php if (count($presentismo) > 0): ?>
+            <?php foreach ($presentismo as $cur): 
+                // Evitamos división por cero si la comisión arranca y no cargaron ninguna falta/presente todavía
+                $totales = (int)$cur->clases_totales;
+                $asistidas = (int)$cur->clases_asistidas;
+                
+                $porcentaje = ($totales > 0) ? round(($asistidas / $totales) * 100, 1) : 100.0;
+                
+                // Regla general: menos de 75% alerta roja
+                $badgeColor = ($porcentaje >= 75.0) ? 'bg-success' : 'bg-danger';
+                $barColor = ($porcentaje >= 75.0) ? '#0096d6' : '#dc3545';
+                $condicionText = ($porcentaje >= 75.0) ? 'Regular' : 'Alerta de Libre';
+            ?>
+                <div class="p-3 bg-light rounded-4 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-dark" style="font-size: 0.95rem;"><?= htmlspecialchars($cur->materia_nombre) ?></span>
+                        <span class="badge <?= $badgeColor ?> rounded-pill fw-bold"><?= $porcentaje ?>% (<?= $condicionText ?>)</span>
+                    </div>
+                    <div class="progress rounded-pill" style="height: 10px;">
+                        <div class="progress-bar" role="progressbar" style="width: <?= $porcentaje ?>%; background-color: <?= $barColor ?>;" aria-valuenow="<?= $porcentaje ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem;">
+                        <span class="text-muted">Mínimo requerido: 75%</span>
+                        <span class="text-secondary fw-semibold">Clases asistidas: <?= $asistidas ?> de <?= $totales ?></span>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="text-muted small mb-0">No registrás inscripciones activas en estado 'cursando'.</p>
+        <?php endif; ?>
+
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+            <span class="fs-4 me-2">🧠</span>
+            <h5 class="fw-bold mb-0" style="color: #111827;">Simulador de Correlativas</h5>
+        </div>
+        <p class="text-muted small">Seleccioná una asignatura para comprobar mediante la API si tenés las correlativas necesarias para cursar o rendir.</p>
+        
+        <div class="row g-2 mb-3">
+            <div class="col-12">
+                <select id="simulador-materia" class="form-select border-light-subtle bg-light">
+                    <option value="">-- Elegir Materia del Plan --</option>
+                    <?php foreach ($materias_plan as $mat): ?>
+                        <option value="<?= $mat->id ?>"><?= htmlspecialchars($mat->nombre) ?> (<?= htmlspecialchars($mat->codigo) ?>)</option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="button" id="btn-simular" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold text-white shadow-sm" style="background-color: #0096d6; border-color: #0096d6;">
+                    🚀 Validar Requisitos
+                </button>
+            </div>
+        </div>
+
+        <div id="resultado-simulador" class="d-none alert rounded-3 p-3 mb-0" role="alert">
+            <div class="d-flex align-items-center">
+                <span class="fs-4 me-2" id="icono-simulador"></span>
+                <div class="small fw-semibold" id="texto-simulador"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('btn-simular').addEventListener('click', function() {
+    const materiaId = document.getElementById('simulador-materia').value;
+    const resultadoDiv = document.getElementById('resultado-simulador');
+    const iconoSpan = document.getElementById('icono-simulador');
+    const textoDiv = document.getElementById('texto-simulador');
+
+    if (!materiaId) {
+        alert('Por favor, seleccione una materia del listado.');
+        return;
+    }
+
+    // Pasamos el ID directamente como parte de la URL limpia de KumbiaPHP
+    fetch('<?= PUBLIC_PATH ?>academico/simular_correlativa/' + materiaId, {
+        method: 'GET', // Cambiamos a GET ya que es una consulta de URL limpia
+        credentials: 'include'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor: ' + response.status);
+        }
+        return response.text();
+    })
+    .then(text => {
+        try {
+            const data = JSON.parse(text);
+            
+            resultadoDiv.classList.remove('d-none', 'alert-success', 'alert-danger');
+            
+            if (data.status === 'aprobado') {
+                resultadoDiv.classList.add('alert-success');
+                iconoSpan.textContent = '✅';
+            } else {
+                resultadoDiv.classList.add('alert-danger');
+                iconoSpan.textContent = '❌';
+            }
+            
+            textoDiv.textContent = data.message;
+            
+        } catch (err) {
+            console.error("Respuesta cruda del servidor:\n", text);
+            alert('Error al procesar la respuesta del servidor.');
+        }
+    })
+    .catch(error => {
+        console.error('Error en el fetch:', error);
+        alert('Ocurrió un error al conectar con el servidor.');
+    });
+});
+</script>

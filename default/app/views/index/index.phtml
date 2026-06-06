@@ -1,0 +1,93 @@
+
+<div class="row mb-4">
+    <div class="col-12 text-center py-3">
+        <h3 class="fw-bold tracking-tight mb-1" style="color: #111827;">¡Hola, bienvenido!</h3>
+        <p class="text-secondary small mb-0">Ecosistema Digital de la Universidad Nacional del Oeste</p>
+        
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white" id="pwa-status-card">
+    <div class="card-body p-3 d-flex align-items-center">
+        <div class="p-2.5 rounded-circle me-3 bg-success-subtle text-success" id="pwa-status-icon" style="background-color: #28a74515 !important;">
+            <span class="fs-4">📱</span>
+        </div>
+        <div>
+            <h6 class="fw-bold mb-0 text-dark" id="pwa-status-title">PulsoUno está lista</h6>
+            <p class="text-muted small mb-0" id="pwa-status-desc">La app ya se descargó en tu dispositivo y funciona sin internet.</p>
+        </div>
+    </div>
+</div>
+
+<h6 class="text-secondary small fw-bold px-1 mb-3 text-uppercase tracking-wider">Servicios Disponibles</h6>
+
+
+<div class="row g-3">
+
+<?php if ($es_profesor): ?>
+    <div class="col-6">
+        <a href="/PulsoUnoApp/asistencia" class="text-decoration-none">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white card-menu-home text-center p-3">
+                <div class="fs-2 mb-2">📋</div>
+                <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.9rem;">Tomar Lista</h6>
+                <p class="text-muted mb-0" style="font-size: 0.7rem;">Módulo para docentes y presentismo.</p>
+            </div>
+        </a>
+    </div>
+<?php endif; ?>
+    
+    
+
+    <div class="col-6">
+        <a href="/PulsoUnoApp/academico" class="text-decoration-none">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white card-menu-home text-center p-3">
+                <div class="fs-2 mb-2">📊</div>
+                <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.9rem;">Mi Cursada</h6>
+                <p class="text-muted mb-0" style="font-size: 0.7rem;">Simulador de notas y correlativas.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6">
+        <a href="/PulsoUnoApp/pool" class="text-decoration-none">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white card-menu-home text-center p-3">
+                <div class="fs-2 mb-2">🚗</div>
+                <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.9rem;">UNO-Pool</h6>
+                <p class="text-muted mb-0" style="font-size: 0.7rem;">Compartir viajes con la comunidad.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6">
+        <a href="/PulsoUnoApp/documentos" class="text-decoration-none">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white card-menu-home text-center p-3">
+                <div class="fs-2 mb-2">📂</div>
+                <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.9rem;">Apuntes</h6>
+                <p class="text-muted mb-0" style="font-size: 0.7rem;">Documentos estáticos en caché offline.</p>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<div class="card border-0 rounded-4 mt-4 bg-light">
+    <div class="card-body p-3 text-center">
+        <span class="text-secondary d-block mb-1" style="font-size: 0.75rem;">Universidad Nacional del Oeste</span>
+        <span class="fw-semibold text-dark" style="font-size: 0.85rem;">Materia: Desarrollo de Interfaces PWA</span>
+    </div>
+</div>
+
+<style>
+    .card-menu-home {
+        transition: transform 0.15s, box-shadow 0.15s;
+        border-bottom: 3px solid transparent !important;
+    }
+    .card-menu-home:active {
+        transform: scale(0.96);
+        background-color: #f8f9fa !important;
+    }
+    /* Resaltamos sutilmente al tacto con el color azul institucional */
+    .card-menu-home:hover {
+        border-bottom: 3px solid #0096d6 !important;
+    }
+</style>

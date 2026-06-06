@@ -1,0 +1,17 @@
+# Ignorar un archivo específico
+# config.php
+# database.sql
+
+# Ignorar una carpeta completa y todo su contenido (como carpetas de dependencias o subidas)
+# /vendor/
+# /node_modules/
+# /uploads/
+
+# Ignorar todos los archivos que tengan una extensión específica
+# *.log
+# *.env
+
+*.mp4
+/default/public/img/
+/default/public/temp/
+/default/public/files/
