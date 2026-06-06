@@ -43,42 +43,6 @@ class LoginController extends AppController {
                     return;
                 }
             }   
-							
-             
-
-
-            // $auth = new Auth("model", "class: usuarios", "legajo: $user->legajo", "password: $user->password");
-			// if ($auth->authenticate()) {
-            //     $usuario=Load::model('usuarios')->find_first("conditions: legajo = '$user->legajo'")->login($user->legajo, $user->password);
-			//     Flash::valid("Bienvenido, {$usuario->nombre}!");
-            //     Redirect::to('index');
-            //     return;
-								
-			// } else {
-			//     Flash::error("Legajo o contraseña incorrectos.");
-            //     return;
-				
-			// }
-
-
-
-            //$usuario = $usuarioModel->login($user->legajo, $user->password);
-
-            // if ($usuario) {
-            //     // Credenciales válidas, iniciar sesión 
-            //     Session::set('usuario_id', $usuario->id);
-            //     Session::set('usuario_nombre', $usuario->nombre);
-            //     Session::set('usuario_apellido', $usuario->apellido);
-            //     Session::set('usuario_legajo', $usuario->legajo);
-            //     Session::set('usuario_rol', $usuario->rol);
-
-            //     Flash::valid("Bienvenido, {$usuario->nombre}!");
-            //     Redirect::to('index');
-            //     return;
-            // } else {
-            //     // Credenciales inválidas
-            //     Flash::error("Legajo o contraseña incorrectos.");
-            // }
 
         }
     }

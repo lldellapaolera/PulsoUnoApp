@@ -7,13 +7,13 @@
       "src": "img/favicon.ico",
       "type": "image/ico",
       "sizes": "25x25",
-      "purpose": "favicon"
+      "purpose": "any"
     },
     {
       "src": "img/logo.jpg",
       "type": "image/jpg",
       "sizes": "335x337",
-      "purpose": "logo principal"
+      "purpose": "any"
     }
   ],
   "start_url": "./index.php",
