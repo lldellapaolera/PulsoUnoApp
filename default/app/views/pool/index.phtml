@@ -1,9 +1,133 @@
-<div id="alert-container" class="w-100 mb-3"></div>
+<div id="alert-container" class="w-100 mb-3"><?= View::content() ?></div>
+<div id="contenedor-alertas-comunidad" class="mb-3"></div>
+
+<?php if (count($solicitudes_recibidas) > 0): ?>
+<div class="card border-0 shadow-sm rounded-4 mb-3 bg-white" style="border-left: 4px solid #f59e0b !important;">
+    <div class="card-body p-4">
+        <h6 class="fw-bold text-warning mb-3">📥 Solicitudes de Viaje Pendientes</h6>
+        <div class="row g-2">
+            <?php foreach ($solicitudes_recibidas as $sol): ?>
+                <div class="col-12 p-3 bg-light rounded-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="text-dark d-block"><?= htmlspecialchars($sol->pasajero_nombre) ?></strong>
+                        <span class="text-muted small">Quiere sumarse en: <?= htmlspecialchars($sol->origen) ?> a las <?= date('H:i', strtotime($sol->hora)) ?> hs</span>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <form action="<?= PUBLIC_PATH ?>pool/responder_solicitud" method="POST" class="d-inline">
+                            <input type="hidden" name="solicitud_id" value="<?= $sol->id ?>">
+                            <input type="hidden" name="accion" value="aceptar">
+                            <button type="submit" class="btn btn-success btn-sm fw-bold rounded-3 px-3">✔ Aceptar</button>
+                        </form>
+                        <form action="<?= PUBLIC_PATH ?>pool/responder_solicitud" method="POST" class="d-inline">
+                            <input type="hidden" name="solicitud_id" value="<?= $sol->id ?>">
+                            <input type="hidden" name="accion" value="rechazar">
+                            <button type="submit" class="btn btn-outline-danger btn-sm fw-bold rounded-3 px-2">❌</button>
+                        </form>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<div class="row g-3 mb-3">
+    
+    <div class="col-12 col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white" style="border-left: 4px solid #10b981 !important;">
+            <div class="card-body p-3">
+                <h6 class="fw-bold text-success mb-2">📅 Mis Viajes Coordinados</h6>
+                <?php if (count($mis_viajes_coordinados) === 0): ?>
+                    <p class="text-muted small mb-0 py-2">No tenés viajes agendados para hoy.</p>
+                <?php else: ?>
+                    <div class="d-flex flex-column gap-2">
+                        <?php foreach ($mis_viajes_coordinados as $coor): ?>
+                            <div class="p-2 bg-light rounded-3 d-flex justify-content-between align-items-center" style="font-size: 0.85rem;">
+                                <div>
+                                    <span class="fw-bold text-dark d-block">Chofer: <?= htmlspecialchars($coor->conductor_nombre) ?></span>
+                                    <span class="text-secondary small"><?= htmlspecialchars($coor->origen) ?> ➔ <?= htmlspecialchars($coor->destino) ?> (<?= date('H:i', strtotime($coor->hora)) ?> hs)</span>
+                                </div>
+                                <form action="<?= PUBLIC_PATH ?>pool/desistir_viaje_coordinado" method="POST" onsubmit="return confirm('¿Seguro que querés bajarte de este viaje compartido?');">
+                                    <input type="hidden" name="solicitud_id" value="<?= $coor->solicitud_id ?>">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-3 fw-semibold py-1 px-2" style="font-size: 0.75rem;">
+                                        🏃 Bajarme
+                                    </button>
+                                </form>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white" style="border-left: 4px solid #0096d6 !important;">
+            <div class="card-body p-3">
+                <h6 class="fw-bold text-primary mb-2">🚗 Mis Publicaciones Activas</h6>
+                <?php if (count($mis_viajes_publicados) === 0): ?>
+                    <p class="text-muted small mb-0 py-2">No publicaste ofertas de viaje todavía.</p>
+                <?php else: ?>
+                    <div class="d-flex flex-column gap-2">
+                        <?php foreach ($mis_viajes_publicados as $pub): ?>
+                            <div class="p-2 bg-light rounded-3 d-flex justify-content-between align-items-center" style="font-size: 0.85rem;">
+                                <div>
+                                    <span class="badge bg-secondary-subtle text-secondary mb-1" style="font-size: 0.7rem;"><?= ucfirst($pub->tipo) ?></span>
+                                    <span class="text-dark d-block">De <?= htmlspecialchars($pub->origen) ?> a las <?= date('H:i', strtotime($pub->hora)) ?> hs</span>
+                                </div>
+                                <form action="<?= PUBLIC_PATH ?>pool/cancelar_viaje_publicado" method="POST" onsubmit="return confirm('¿De verdad querés eliminar esta publicación? Se darán de baja los alumnos aceptados.');">
+                                    <input type="hidden" name="viaje_id" value="<?= $pub->id ?>">
+                                    <button type="submit" class="btn btn-sm btn-danger text-white rounded-3 fw-semibold py-1 px-2" style="font-size: 0.75rem;">
+                                        🗑️ Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="panel-gps" class="card border-0 shadow-sm rounded-4 mb-3 bg-white d-none" style="border-left: 4px solid #10b981 !important;">
+    <div class="card-body p-3">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fs-4" id="gps-icon">📡</span>
+                <div>
+                    <h6 class="fw-bold mb-0 small" style="color: #111827;">Compartir Ubicación en Vivo</h6>
+                    <p class="text-muted small mb-0" id="gps-status" style="font-size: 0.75rem;">GPS desactivado.</p>
+                </div>
+            </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="switch-gps" style="scale: 1.3; cursor: pointer;">
+            </div>
+        </div>
+
+        <div id="alerta-permisos-background" class="mt-3 p-3 rounded-4 bg-warning-subtle text-warning-heading d-none" style="border: 1px dashed #f59e0b;">
+            <div class="d-flex gap-2 mb-2">
+                <span class="fs-5">⚠️</span>
+                <strong class="small text-dark fw-bold">Configuración obligatoria para Segundo Plano</strong>
+            </div>
+            <p class="text-dark small mb-2" style="font-size: 0.8rem; line-height: 1.325;">
+                Para que tus compañeros sigan viendo tu posición en el mapa con la pantalla apagada o mientras usás WhatsApp, tu celular requiere estos dos ajustes:
+            </p>
+            <ul class="text-dark small ps-3 mb-0" style="font-size: 0.78rem; line-height: 1.4;">
+                <li class="mb-1"><strong>Permiso de GPS:</strong> Seleccioná <span class="badge bg-white text-dark shadow-sm">"Permitir todo el tiempo"</span> (no solo "Mientras la app está en uso").</li>
+                <li><strong>Batería:</strong> Entrá a los ajustes de la app en tu celu y elegí <span class="badge bg-white text-dark shadow-sm">"Sin restricciones"</span> o "Alto rendimiento" para que Android no duerma la aplicación.</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 <div class="card border-0 shadow-sm rounded-4 mb-3 bg-white">
     <div class="card-body p-4">
-        <h5 class="fw-bold mb-3" style="color: #111827;">🚗 Buscar Viaje Compartido</h5>
-        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0" style="color: #111827;">🚗 Buscar Viaje Compartido</h5>
+            <button class="btn btn-sm btn-outline-primary rounded-3 fw-bold" data-bs-toggle="modal" data-bs-target="#modalPublicarViaje">➕ Publicar el Mío</button>
+        </div>
         <form id="form-buscar-viaje" class="row g-2">
             <div class="col-12">
                 <label class="form-label small fw-semibold text-secondary mb-1">Tu rol actual:</label>
@@ -12,14 +136,11 @@
                     <option value="conductor">Soy Conductor (Ofrezco Lugar)</option>
                 </select>
             </div>
-
             <div class="col-12">
                 <label class="form-label small fw-semibold text-secondary mb-1">Localidad o Zona del Oeste:</label>
                 <div class="input-group">
-                    <input type="text" id="pool-localidad" class="form-control border-light-subtle bg-light" placeholder="Ej: Merlo, Padua, Ituzaingó..." required>
-                    <button class="btn btn-primary text-white fw-bold" type="submit" style="background-color: #0096d6; border-color: #0096d6;">
-                        🔍 Buscar
-                    </button>
+                    <input type="text" id="pool-localidad" class="form-control border-light-subtle bg-light" placeholder="Ej: Merlo..." required>
+                    <button class="btn btn-primary text-white fw-bold" type="submit" style="background-color: #0096d6;">🔍 Buscar</button>
                 </div>
             </div>
         </form>
@@ -34,18 +155,18 @@
 <div id="contenedor-viajes" class="row g-3">
     <div class="col-12 text-center py-5 text-muted" id="estado-vacio-pool">
         <span class="fs-1 d-block mb-2">📍</span>
-        <p class="small mb-0">Ingresá tu localidad arriba para encontrar compañeros de cursada que hagan tu misma ruta.</p>
+        <p class="small mb-0">Ingresá tu localidad arriba para encontrar compañeros de cursada.</p>
     </div>
 </div>
 
 <template id="template-tarjeta-viaje">
-    <div class="col-12">
+    <div class="col-12 class-item-viaje">
         <div class="card border-0 shadow-sm rounded-4 card-viaje-pool bg-white">
             <div class="card-body p-3">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
                         <h6 class="fw-bold mb-0 nombre-usuario" style="color: #111827;">-</h6>
-                        <span class="badge bg-primary-subtle text-primary small tipo-viaje mt-1" style="background-color: #0096d620 !important; color: #0096d6 !important;">-</span>
+                        <span class="badge bg-primary-subtle text-primary small tipo-viaje mt-1">-</span>
                     </div>
                     <div class="text-end">
                         <span class="text-secondary d-block" style="font-size: 0.75rem;">Hora Salida</span>
@@ -57,20 +178,493 @@
                     <div class="mb-1"><strong>📍 Origen:</strong> <span class="origen-viaje">-</span></div>
                     <div><strong>🎯 Destino:</strong> <span class="destino-viaje">-</span></div>
                 </div>
-
                 <p class="text-muted small mb-3 detalles-viaje">-</p>
 
                 <div class="d-flex justify-content-between align-items-center pt-2 border-top">
                     <span class="small text-secondary dias-viaje">📅 -</span>
-                    <a href="#" target="_blank" class="btn btn-success btn-sm rounded-3 fw-bold px-3 btn-whatsapp">
-                        💬 Coordinar
-                    </a>
+                    <div class="d-flex gap-1 accion-contenedor">
+                        </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
+<div class="modal fade" id="modalPublicarViaje" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalPublicarViajeLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4 bg-white">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-dark" id="modalPublicarViajeLabel">🚗 Publicar Nuevo Viaje</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="<?= PUBLIC_PATH ?>pool/publicar" method="POST">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">¿Cuál es tu rol en este viaje?</label>
+                        <select name="tipo" class="form-select border-light-subtle bg-light" required>
+                            <option value="conductor">Soy Conductor (Ofrezco lugares)</option>
+                            <option value="acompañante">Soy Acompañante (Busco chofer)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Localidad / Municipio:</label>
+                        <input type="text" name="localidad" class="form-control border-light-subtle bg-light" placeholder="Ej: Merlo" required>
+                    </div>
 
-<style>
-    .card-viaje-pool { border-left: 4px solid #0096d6 !important; }
-</style>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Origen (¿De dónde salís?):</label>
+                            <input type="text" name="origen" class="form-control border-light-subtle bg-light" placeholder="Ej: Estación Merlo" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Destino (¿A qué sede vas?):</label>
+                            <input type="text" name="destino" class="form-control border-light-subtle bg-light" placeholder="Ej: Sede Centenario" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Hora aproximada:</label>
+                            <input type="time" name="hora" class="form-control border-light-subtle bg-light" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary d-block mb-2">Días que viajás:</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="form-check form-check-inline m-0">
+                                    <input class="form-check-input" type="checkbox" name="dias[]" value="Lun" id="chk-lun">
+                                    <label class="form-check-label small" for="chk-lun">Lun</label>
+                                </div>
+                                <div class="form-check form-check-inline m-0">
+                                    <input class="form-check-input" type="checkbox" name="dias[]" value="Mar" id="chk-mar">
+                                    <label class="form-check-label small" for="chk-mar">Mar</label>
+                                </div>
+                                <div class="form-check form-check-inline m-0">
+                                    <input class="form-check-input" type="checkbox" name="dias[]" value="Mié" id="chk-mie">
+                                    <label class="form-check-label small" for="chk-mie">Mié</label>
+                                </div>
+                                <div class="form-check form-check-inline m-0">
+                                    <input class="form-check-input" type="checkbox" name="dias[]" value="Jue" id="chk-jue">
+                                    <label class="form-check-label small" for="chk-jue">Jue</label>
+                                </div>
+                                <div class="form-check form-check-inline m-0">
+                                    <input class="form-check-input" type="checkbox" name="dias[]" value="Vie" id="chk-vie">
+                                    <label class="form-check-label small" for="chk-vie">Vie</label>
+                                </div>
+                                <div class="form-check form-check-inline m-0">
+                                    <input class="form-check-input" type="checkbox" name="dias[]" value="Sáb" id="chk-sab">
+                                    <label class="form-check-label small" for="chk-sab">Sáb</label>
+                                </div>
+                                <div class="form-check form-check-inline m-0">
+                                    <input class="form-check-input" type="checkbox" name="dias[]" value="Dom" id="chk-dom">
+                                    <label class="form-check-label small" for="chk-dom">Dom</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label small fw-semibold text-secondary">Detalles adicionales (Opcional):</label>
+                        <textarea name="detalles" class="form-control border-light-subtle bg-light" rows="2" placeholder="Ej: Voy en un Gol gris, dividimos nafta..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0 d-flex gap-2 justify-content-end">
+                    <button type="button" class="btn btn-light rounded-3 fw-bold text-secondary px-3" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary text-white fw-bold rounded-3 px-4" style="background-color: #0096d6;">🚀 Publicar Viaje</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 mb-3 bg-white">
+    <div class="card-body p-3">
+        <h5 class="fw-bold mb-1" style="color: #111827;">📍 Radar de Compañeros en Vivo</h5>
+        <p class="text-muted small mb-3">Descubrí quiénes están cerca tuyo en el mapa ahora mismo y proponeles compartir el viaje.</p>
+        
+        <div id="mapa-comunidad" class="rounded-4 mb-3 shadow-inner" style="height: 320px; width: 100%; background-color: #f3f4f6; z-index: 1;"></div>
+        
+        <h6 class="fw-bold text-secondary small mb-2">Compañeros activos ordenados por cercanía:</h6>
+        <div id="lista-radar-cercania" class="row g-2">
+            <div class="col-12 text-center py-3 text-muted small">
+                ⏳ Cargando radar de cercanía y satélites...
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const panelGps = document.getElementById('panel-gps');
+    if (panelGps) panelGps.classList.remove('d-none');
+
+    let miIntervaloPool = null;
+
+    function ejecutarBusquedaReal() {
+        const rol = document.getElementById('pool-rol').value;
+        const localidad = document.getElementById('pool-localidad').value;
+        if (!localidad) return;
+
+        const contenedor = document.getElementById('contenedor-viajes');
+        const estadoVacio = document.getElementById('estado-vacio-pool');
+        const totalBadge = document.getElementById('total-resultados');
+
+        const urlBusqueda = "<?= PUBLIC_PATH ?>pool/buscar?tipo=" + rol + "&localidad=" + encodeURIComponent(localidad);
+
+        fetch(urlBusqueda)
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    contenedor.querySelectorAll('.class-item-viaje').forEach(el => el.remove());
+                    estadoVacio.style.display = 'block';
+                    totalBadge.textContent = "0 disponibles";
+                    return;
+                }
+
+                estadoVacio.style.display = 'none';
+                totalBadge.textContent = data.length + " disponibles";
+
+                data.forEach(viaje => {
+                    let tarjetaExistente = document.getElementById("viaje-card-" + viaje.id);
+                    
+                    // Lógica para renderizar los botones correctos de seguridad
+                    let htmlBotones = "";
+                    if (viaje.solicitud_estado === 'ninguna') {
+                        htmlBotones = `<button class="btn btn-primary btn-sm rounded-3 fw-bold px-3 btn-solicitar" data-id="${viaje.id}">📩 Solicitar Viaje</button>`;
+                    } else if (viaje.solicitud_estado === 'pendiente') {
+                        htmlBotones = `<span class="badge bg-warning-subtle text-warning p-2 rounded-3 small">⏳ Esperando Aceptación</span>`;
+                    } else if (viaje.solicitud_estado === 'rechazado') {
+                        htmlBotones = `<span class="badge bg-danger-subtle text-danger p-2 rounded-3 small">❌ Solicitud Rechazada</span>`;
+                    } else if (viaje.solicitud_estado === 'aceptado') {
+                        // Si está aceptado, habilitamos los datos reales del viaje
+                        let linkGps = (viaje.latitud && viaje.longitud) ? `<a href="https://maps.google.com/?q=${viaje.latitud},${viaje.longitud}" target="_blank" class="btn btn-outline-danger btn-sm rounded-3 fw-bold px-2">📍 En Vivo</a>` : '';
+                        htmlBotones = `${linkGps} <a href="https://wa.me/${viaje.telefono}" target="_blank" class="btn btn-success btn-sm rounded-3 fw-bold px-3">💬 Coordinar</a>`;
+                    }
+
+                    if (tarjetaExistente) {
+                        // Actualizamos los botones dinámicamente en el bucle en vivo
+                        tarjetaExistente.querySelector('.accion-contenedor').innerHTML = htmlBotones;
+                    } else {
+                        const template = document.getElementById('template-tarjeta-viaje');
+                        const clon = template.content.cloneNode(true);
+                        
+                        clon.querySelector('.class-item-viaje').id = "viaje-card-" + viaje.id;
+                        clon.querySelector('.nombre-usuario').textContent = viaje.nombre;
+                        clon.querySelector('.tipo-viaje').textContent = viaje.tipo === 'conductor' ? '🚗 Conductor Disp.' : '🚶 Busca Chofer';
+                        clon.querySelector('.hora-viaje').textContent = viaje.hora;
+                        clon.querySelector('.origen-viaje').textContent = viaje.origen;
+                        clon.querySelector('.destino-viaje').textContent = viaje.destino;
+                        clon.querySelector('.detalles-viaje').textContent = viaje.detalles;
+                        clon.querySelector('.dias-viaje').textContent = "📅 " + viaje.dias;
+                        clon.querySelector('.accion-contenedor').innerHTML = htmlBotones;
+
+                        contenedor.appendChild(clon);
+                    }
+                });
+
+                // Asignamos el evento click a los nuevos botones de solicitar creados
+                document.querySelectorAll('.btn-solicitar').forEach(btn => {
+                    btn.onclick = function() {
+                        const vId = this.getAttribute('data-id');
+                        const fd = new FormData();
+                        fd.append('viaje_id', vId);
+
+                        fetch('<?= PUBLIC_PATH ?>pool/solicitar_viaje', { method: 'POST', body: fd })
+                            .then(r => r.json())
+                            .then(res => {
+                                if(res.status === 'success') ejecutarBusquedaReal(); // Recarga al instante
+                            });
+                    };
+                });
+            });
+    }
+
+    document.getElementById('form-buscar-viaje').addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (miIntervaloPool !== null) clearInterval(miIntervaloPool);
+        ejecutarBusquedaReal();
+        miIntervaloPool = setInterval(ejecutarBusquedaReal, 10000);
+    });
+
+    // 3. Lógica del Switch de Geolocalización Avanzado (Segundo Plano)
+    // ================================================================
+// 💾 CONTROL DEL SWITCH DE GEOLOCALIZACIÓN CON MEMORIA PERSISTENTE
+// ================================================================
+    const switchGps = document.getElementById('switch-gps');
+    const alertaPermisos = document.getElementById('alerta-permisos-background');
+    const statusText = document.getElementById('gps-status');
+    const icon = document.getElementById('gps-icon');
+    let intervaloLocalizado = null;
+
+    // 1. FUNCIÓN CENTRALIZADA PARA ENCENDER EL RASTREO
+    function encenderGpsVisualYLogico() {
+        if (!navigator.geolocation) {
+            alert("Tu GPS no está disponible en este dispositivo.");
+            if (switchGps) switchGps.checked = false;
+            return;
+        }
+
+        // Ajustes visuales
+        if (switchGps) switchGps.checked = true;
+        if (alertaPermisos) alertaPermisos.classList.remove('d-none');
+        if (statusText) statusText.textContent = "Señal activa (Transmitiendo de fondo)...";
+        if (icon) icon.textContent = "🟢";
+
+        // Guardamos estado de permanencia
+        localStorage.setItem('gps_tracking_activo', 'true');
+
+        // Iniciamos bucle de transmisión en primer plano (mientras la pestaña esté abierta)
+        if (intervaloLocalizado) clearInterval(intervaloLocalizado);
+        intervaloLocalizado = setInterval(() => {
+            navigator.geolocation.getCurrentPosition(position => {
+                enviarCoordenadasServidor(position.coords.latitude, position.coords.longitude);
+            }, null, { enableHighAccuracy: true });
+        }, 15000);
+
+        // Le avisamos al Service Worker que mantenga el hilo vivo de fondo
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({ action: 'START_BACKGROUND_TRACKING' });
+        }
+    }
+
+    // 2. FUNCIÓN CENTRALIZADA PARA APAGAR EL RASTREO
+    function apagarGpsVisualYLogico() {
+        if (switchGps) switchGps.checked = false;
+        if (alertaPermisos) alertaPermisos.classList.add('d-none');
+        if (statusText) statusText.textContent = "GPS desactivado.";
+        if (icon) icon.textContent = "📡";
+
+        localStorage.removeItem('gps_tracking_activo');
+        if (intervaloLocalizado) clearInterval(intervaloLocalizado);
+        
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({ action: 'STOP_BACKGROUND_TRACKING' });
+        }
+    }
+
+    // 3. VERIFICACIÓN INICIAL (Al cargar la página o volver de otra sección)
+    if (localStorage.getItem('gps_tracking_activo') === 'true') {
+        // Si ya estaba activo antes de ir a "Apuntes", lo reanudamos al toque
+        encenderGpsVisualYLogico();
+    }
+
+    // 4. ESCUCHADOR DEL SWITCH (Acción manual del usuario)
+    if (switchGps) {
+        switchGps.addEventListener('change', function() {
+            if (this.checked) {
+                encenderGpsVisualYLogico();
+            } else {
+                apagarGpsVisualYLogico();
+            }
+        });
+    }                                     
+
+    // Función auxiliar para centralizar el fetch de ubicación
+    function enviarCoordenadasServidor(lat, lng) {
+        const formData = new FormData();
+        formData.append('lat', lat);
+        formData.append('lng', lng);
+
+        fetch('<?= PUBLIC_PATH ?>pool/actualizar_posicion', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .catch(err => console.error("Error GPS sync:", err));
+    }
+    // ==========================================
+    // 🌐 LÓGICA DEL RADAR PROACTIVO (LEAFLET MAP)
+    // ==========================================
+    let mapa = null;
+    let grupoMarcadores = null;
+    let miLatitudActual = -34.6656; // Por defecto Merlo
+    let miLongitudActual = -58.7281;
+
+    // Inicializamos el mapa centrado en el Oeste
+    if (document.getElementById('mapa-comunidad')) {
+        mapa = L.map('mapa-comunidad').setView([miLatitudActual, miLongitudActual], 14);
+        
+        // Cargamos la capa visual estética de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap colaboradores'
+        }).addTo(mapa);
+
+        grupoMarcadores = L.layerGroup().addTo(mapa);
+    }
+
+    function procesarRadarYMapa() {
+        // Solicitamos primero nuestra ubicación real para enviársela a la API de Haversine
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                miLatitudActual = position.coords.latitude;
+                miLongitudActual = position.coords.longitude;
+                
+                // Centramos el mapa en nuestra posición real
+                mapa.setView([miLatitudActual, miLongitudActual], 14);
+                
+                ejecutarCargaRadarBackend();
+            }, function(error) {
+                // Si el usuario tiene el GPS apagado en la PC, carga igual con la posición base
+                ejecutarCargaRadarBackend();
+            });
+        }
+    }
+
+    function ejecutarCargaRadarBackend() {
+        const listaContenedor = document.getElementById('lista-radar-cercania');
+        if (!listaContenedor) return;
+
+        // Limpiamos los marcadores viejos del mapa
+        grupoMarcadores.clearLayers();
+
+        // Dibujamos NUESTRO marcador (Azul)
+        L.marker([miLatitudActual, miLongitudActual])
+         .addTo(grupoMarcadores)
+         .bindPopup("<b>📍 Estás acá</b><br>Tu posición actual de transmisión.")
+         .openPopup();
+
+        // Consultamos al controlador pasándole nuestras coordenadas reales
+        fetch(`<?= PUBLIC_PATH ?>pool/obtener_usuarios_cercanos?lat=${miLatitudActual}&lng=${miLongitudActual}`)
+            .then(res => res.json())
+            .then(usuarios => {
+                if (!usuarios || usuarios.length === 0) {
+                    listaContenedor.innerHTML = `<div class="col-12 text-center text-muted small py-2">No hay otros usuarios transmitiendo en vivo cerca tuyo en este momento.</div>`;
+                    return;
+                }
+
+                listaContenedor.innerHTML = ""; // Limpiamos el texto de carga
+
+                usuarios.forEach(u => {
+                    // 1. DIBUJAR EN EL MAPAINTERACTIVO
+                    // Si es conductor usamos color verde, si es acompañante color naranja
+                    const iconoColor = u.tipo === 'conductor' ? '🚗' : '🚶';
+                    
+                    L.marker([u.latitud, u.longitud])
+                     .addTo(grupoMarcadores)
+                     .bindPopup(`
+                        <b>${iconoColor} ${u.nombre} (${ucfirst(u.tipo)})</b><br>
+                        Distancia: ${u.distancia} km<br>
+                        <button class="btn btn-primary btn-sm w-100 mt-2 text-white fw-bold py-1" onclick="proponerViajeDirecto(${u.id})">📩 Proponer Viaje</button>
+                     `);
+
+                    // 2. DIBUJAR EN EL LISTADO INFERIOR CON DISTANCIA
+                    // Convertimos la distancia a un formato amigable (metros o km)
+                    const distanciaTexto = u.distancia < 1 ? `${Math.round(u.distancia * 1000)} metros` : `${u.distancia} km`;
+                    const badgeRol = u.tipo === 'conductor' ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning';
+
+                    const divItem = document.createElement('div');
+                    divItem.className = "col-12 col-sm-6";
+                    divItem.innerHTML = `
+                        <div class="p-3 bg-light rounded-4 d-flex justify-content-between align-items-center border-0 shadow-sm">
+                            <div>
+                                <span class="badge ${badgeRol} small mb-1">${ucfirst(u.tipo)}</span>
+                                <strong class="text-dark d-block">${u.nombre}</strong>
+                                <span class="text-muted d-block" style="font-size: 0.75rem;">📍 A <strong>${distanciaTexto}</strong> de tu ubicación</span>
+                            </div>
+                            <button class="btn btn-sm btn-primary rounded-3 text-white fw-bold px-3" onclick="proponerViajeDirecto(${u.id})">
+                                📩 Invitar
+                            </button>
+                        </div>
+                    `;
+                    listaContenedor.appendChild(divItem);
+                });
+            });
+    }
+
+    // Helper simple para capitalizar textos
+    function ucfirst(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+    // Función global para disparar la propuesta
+    window.proponerViajeDirecto = function(viajeId) {
+        const fd = new FormData();
+        fd.append('viaje_id', viajeId);
+
+        fetch('<?= PUBLIC_PATH ?>pool/solicitar_viaje', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(res => {
+                alert("¡Propuesta enviada! Le brotará una notificación al compañero en su pantalla de inmediato.");
+                procesarRadarYMapa(); // Recargamos el mapa dinámicamente
+            });
+    }
+
+    // Ejecutamos el radar al iniciar la página
+    procesarRadarYMapa();
+    // Lo refrescamos silenciosamente cada 15 segundos para capturar el movimiento de la gente en la calle
+    setInterval(procesarRadarYMapa, 15000);
+});
+
+// Función para descartar las notificaciones en vivo
+function marcarNotificacionLeida(id, elementoBoton) {
+    // Apuntamos a un endpoint rápido o resolvemos directo por AJAX
+    const formData = new FormData();
+    formData.append('id', id);
+
+    // Animación suave para hacer desaparecer la alerta de la pantalla
+    const alertaDiv = elementoBoton.closest('.alert');
+    if (alertaDiv) {
+        alertaDiv.style.transition = "all 0.3s ease";
+        alertaDiv.style.opacity = "0";
+        setTimeout(() => alertaDiv.remove(), 300);
+    }
+
+    // Le avisamos a la base de datos que el usuario ya leyó este mensaje
+    // Podés crear una acción rápida en tu controlador para cambiar el campo 'leido' a 1
+    fetch('<?= PUBLIC_PATH ?>pool/marcar_notificacion_leida/' + id, { method: 'POST' });
+}
+
+
+// 🔔 FUNCIÓN PARA BUSCAR NOTIFICACIONES EN SEGUNDO PLANO
+    function chequearNotificacionesEnVivo() {
+        const contenedorAlertas = document.getElementById('contenedor-alertas-comunidad');
+        if (!contenedorAlertas) return;
+
+        fetch('<?= PUBLIC_PATH ?>pool/obtener_notificaciones_ajax')
+            .then(res => res.json())
+            .then(notificaciones => {
+                // Guardamos los IDs de las alertas que ya se están mostrando para no duplicar
+                const alertasActuales = Array.from(contenedorAlertas.querySelectorAll('[data-notif-id]'))
+                                             .map(el => el.getAttribute('data-notif-id'));
+
+                notificaciones.forEach(notif => {
+                    // Si la alerta ya está en pantalla, no la volvemos a pintar
+                    if (alertasActuales.includes(notif.id.toString())) return;
+
+                    // Creamos la alerta dinámicamente con estilos Bootstrap
+                    const divAlerta = document.createElement('div');
+                    divAlerta.className = "alert alert-info border-0 shadow-sm rounded-4 d-flex justify-content-between align-items-center p-3 mb-2 bg-white animate-fade-in";
+                    divAlerta.style.borderLeft = "4px solid #0096d6 !important";
+                    divAlerta.setAttribute('data-notif-id', notif.id);
+                    divAlerta.style.opacity = "0";
+                    divAlerta.style.transform = "translateY(-10px)";
+                    divAlerta.style.transition = "all 0.4s ease";
+
+                    divAlerta.innerHTML = `
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fs-5">🔔</span>
+                            <span class="small text-dark fw-medium">${notif.mensaje}</span>
+                        </div>
+                        <button type="button" class="btn-close small" style="font-size: 0.75rem;" onclick="marcarNotificacionLeida(${notif.id}, this)"></button>
+                    `;
+
+                    // Metemos la alerta arriba de todo
+                    contenedorAlertas.insertBefore(divAlerta, contenedorAlertas.firstChild);
+                    
+                    // Efecto visual de entrada fluida (Slide Down)
+                    setTimeout(() => {
+                        divAlerta.style.opacity = "1";
+                        divAlerta.style.transform = "translateY(0)";
+                    }, 50);
+                });
+            })
+            .catch(err => console.error("Error al sincronizar alertas:", err));
+    }
+
+    // Ejecutamos el chequeo apenas carga la app
+    chequearNotificacionesEnVivo();
+
+    // ⏳ Bucle de Alertas: Revisa silenciosamente cada 5 segundos
+    setInterval(chequearNotificacionesEnVivo, 5000);
+</script>

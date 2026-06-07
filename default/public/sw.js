@@ -88,3 +88,46 @@ self.addEventListener('fetch', (event) => {
     );
   }
 });
+
+// 🔄 código interno dentro de sw.js
+
+let bgIntervalId = null;
+
+// Escuchamos las órdenes de la app principal
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.action === 'START_BACKGROUND_TRACKING') {
+        iniciarRastreoIninterrumpido();
+    } else if (event.data && event.data.action === 'STOP_BACKGROUND_TRACKING') {
+        if (bgIntervalId) {
+            clearInterval(bgIntervalId);
+            bgIntervalId = null;
+        }
+    }
+});
+
+function iniciarRastreoIninterrumpido() {
+    if (bgIntervalId) clearInterval(bgIntervalId);
+
+    // El Service Worker va a intentar correr esta rutina cada 20 segundos de fondo
+    bgIntervalId = setInterval(() => {
+        // Usamos la API de geolocalización desde el entorno global de self si está disponible
+        // O ejecutamos un auto-despertar sincrónico
+        if ('geolocation' in self.navigator) {
+            self.navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                // Armamos el envío directo al backend usando rutas absolutas
+                const formData = new URLSearchParams();
+                formData.append('lat', lat);
+                formData.append('lng', lng);
+
+                fetch('/pulsounoapp/pool/actualizar_posicion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData.toString()
+                }).catch(err => console.log("Fallo envío en 2do plano:", err));
+            }, null, { enableHighAccuracy: true });
+        }
+    }, 20000); 
+}

@@ -7,9 +7,23 @@
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Apuntamos al sw.js que está en la raíz de public
-    navigator.serviceWorker.register('../sw.js')
-      .then(reg => console.log('[PWA] Service Worker registrado con éxito', reg))
-      .catch(err => console.error('[PWA] Error al registrar el Service Worker', err));
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        // 🚨 FORZAMOS EL SCRIPT Y EL SCOPE MEDIANTE PUBLIC_PATH
+        navigator.serviceWorker.register('<?= PUBLIC_PATH ?>sw.js', {
+            scope: '<?= PUBLIC_PATH ?>'
+        })
+        .then(reg => {
+            console.log('[PWA] Service Worker registrado con éxito en el scope:', reg.scope);
+        })
+        .catch(err => {
+            console.error('[PWA] Error al registrar el Service Worker:', err);
+        });
+      });
+    }
+    // navigator.serviceWorker.register('../sw.js')
+    //   .then(reg => console.log('[PWA] Service Worker registrado con éxito', reg))
+    //   .catch(err => console.error('[PWA] Error al registrar el Service Worker', err));
   });
 }
 
