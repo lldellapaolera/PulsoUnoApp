@@ -1,56 +1,51 @@
+# 🛰️ PulsoUno - Sistema de Gestión e Infraestructura Universitaria (PWA)
 
-# PulsoUno 🚀
-> **Sistema Institucional del Oeste — Gestión Académica, Presentismo Offline y Movilidad Comunitaria**
+¡Bienvenido al repositorio de **PulsoUno**! Este proyecto ha sido transformado en una **Progressive Web App (PWA)** funcional, adaptada para cumplir con los estándares académicos más exigentes y resolver problemas críticos de conectividad intermitente o nula (Modo Offline-First).
 
-PulsoUno es una aplicación web progresiva (**PWA**) diseñada específicamente para modernizar y agilizar la vida universitaria en la **Universidad Nacional del Oeste (UNO)**. La plataforma unifica la gestión académica diaria de docentes y alumnos con un sistema solidario de movilidad comunitaria, permitiendo un funcionamiento fluido incluso dentro de las aulas sin conectividad.
-
----
-
-## 🗺️ Arquitectura del Sistema
-
-El proyecto implementa una arquitectura desacoplada basada en el patrón **MVC (Modelo-Vista-Controlador)**:
-
-* **Backend (API Restful):** Desarrollado sobre **KumbiaPHP v1.0 beta** bajo **PHP 8.0.30**, configurado en un entorno de servidor robusto administrado mediante **Virtualmin/Webmin**. Utiliza el ORM nativo `ActiveRecord` para la interacción óptima con **MySQL 8.0**.
-* **Frontend (App Shell PWA):** Un cliente estático ultraliviano construido con **Bootstrap v5.3.3** y JavaScript vanilla. Está diseñado bajo el enfoque *Mobile-First* para optimizar la usabilidad en dispositivos móviles mediante navegación ergonómica en la zona inferior (`fixed-bottom`).
+Este documento sirve como guía técnica para todo el equipo de cara a la presentación y defensa del proyecto.
 
 ---
 
-## 🛠️ Características Principales
+## 🚀 Funcionalidades Clave Añadidas
 
-### 📊 Módulo Académico y Asistencia (Profesores / Alumnos)
-* **Toma de Asistencia Eficiente:** Los docentes registran el presentismo de su comisión con interfaces rápidas basadas en componentes táctiles nativos (`form-switch`).
-* **Persistencia y Sincronización Offline:** El *Service Worker* captura y retiene las asistencias mediante almacenamiento local (`IndexedDB` / `localStorage`) si no hay señal en el aula, sincronizándolas automáticamente por lotes en segundo plano al recuperar la conexión.
-* **Panel Estadístico del Alumno:** Cálculo automatizado en tiempo real del porcentaje de presentismo por materia con alertas preventivas al descender del límite de regularidad (75%).
-* **Simulador de Cursada y Correlatividades:** Renderizado condicional del árbol de correlatividades según actas de examen, permitiendo al alumno saber exactamente qué asignaturas está habilitado para cursar o rendir.
+1. **Arquitectura Offline-First (Resiliencia de Red):**
+   * **Login Protegido:** El sistema detecta mediante JavaScript nativo (`navigator.onLine`) si el dispositivo tiene señal. Si no hay red, congela el formulario de ingreso y muestra un banner de advertencia dinámico de Bootstrap para evitar peticiones colgadas (`ERR_FAILED`) o errores de servidor.
+   * **Banner de Estado Global:** Dentro de la sesión activa, si el usuario cruza una zona sin señal, se activa un banner superior estético que avisa: *"Estás navegando en Modo Offline (Sin conexión). Viendo datos locales mínimos"*.
 
-### 🚗 Módulo de Movilidad Comunitaria ("UNO-Pool")
-* **Red de Acompañantes y Conductores:** Configuración de perfiles de viaje para alumnos y profesores de la comunidad ("Ofrece lugar" o "Busca viaje"), detallando rutas de tránsito y horarios de cursada.
-* **Algoritmo de Coincidencias Geográficas:** Cruce inteligente de datos de trayectos interurbanos en la zona oeste (ej. Merlo, Padua, Ituzaingó) priorizando compatibilidad horaria y cercanía de rutas.
-* **Enlace de Contacto Seguro:** Integración con APIs de mensajería instantánea para la coordinación rápida entre compañeros de forma privada.
+2. **Rastreo y Sincronización en Segundo Plano:**
+   * Implementación de un sistema de tracking ininterrumpido a través de mensajería del Service Worker que permite capturar datos de geolocalización y preparar los envíos al backend de forma eficiente.
 
-### 📂 Repositorio de Documentación Estática
-* **Acceso Remoto sin Señal:** Caché selectiva basada en estrategias *Cache-First* para almacenar programas de cátedra y apuntes en formato PDF directamente en el dispositivo móvil.
+3. **Notificaciones Push e Integración con Firebase (FCM):**
+   * Vinculación con el SDK de **Firebase Cloud Messaging** para la recepción de alertas académicas y notificaciones en segundo plano, generando un token único sincronizado directamente con nuestro backend en KumbiaPHP.
+
+4. **Instalación Nativa (PWA):**
+   * La app cumple con los requisitos del App Shell, permitiendo a los usuarios "Instalar" PulsoUno directamente en la pantalla de inicio de sus dispositivos Android, iOS o Escritorio sin intermediarios de tiendas (Play Store/App Store).
 
 ---
 
-## 📂 Estructura del Proyecto
+## 🛠️ Tecnologías y Herramientas Utilizadas
 
-```text
-kumbiaphp/
-├── default/
-│   └── app/
-│       ├── controllers/
-│       │   └── api_controller.php      # Endpoints JSON principales (Asistencia, Pool, Notas)
-│       └── models/
-│           ├── materia.php             # Lógica del árbol de correlatividades
-│           ├── asistencia.php          # Lógica del presentismo docente
-│           └── viaje.php               # Motor de coincidencias de UNO-Pool
-└── public/                             # Raíz del servidor web (App Shell PWA)
-    ├── css/
-    │   └── bootstrap.min.css           # Framework UI Bootstrap v5.3.3
-    ├── js/
-    │   ├── bootstrap.bundle.min.js
-    │   └── app.js                      # Lógica cliente y registro del Service Worker
-    ├── manifest.json                   # Configuración de instalación PWA
-    ├── sw.js                           # Service Worker y estrategias de caché offline
-    └── index.html                      # Punto de entrada de la aplicación
+* **Backend / Servidor:** KumbiaPHP Framework (MVC), PHP, XAMPP (Apache/MySQL).
+* **Frontend / Interfaz:** HTML5, CSS3 personalizado, Bootstrap 5.3.3 (Mobile-First).
+* **Core PWA:** JavaScript Moderno (Vanilla JS), Service Worker API, Cache Storage API, Web App Manifest.
+* **Mensajería Push:** Firebase SDK v10.8 (Compat), Firebase Cloud Messaging (FCM).
+
+---
+
+## 🧠 Técnicas de Ingeniería Web Implementadas
+
+### 1. Gestión del Ciclo de Vida del Service Worker (`sw.js`)
+* **Estrategia Cache-First para Estáticos:** Recursos como Bootstrap, íconos y fuentes se sirven instantáneamente desde la caché local del dispositivo, optimizando el rendimiento y ahorrando datos.
+* **Estrategia Network-First con Fallback para Navegación:** Para las vistas dinámicas y controladores de KumbiaPHP (como `/login` o `/api/`), el Service Worker intenta primero buscar datos actualizados en la red. Si el servidor (XAMPP) está apagado o inaccesible, el bloque `.catch()` intercepta el fallo y sirve la última versión almacenada en caché.
+* **Evasión de Falsos Positivos en Android (Cold Start):** Se programó un retraso inicial (`setTimeout`) y una prueba de fuego (`fetch` real al manifest) en el inicio de la app para evitar que los retrasos del chip de red en dispositivos móviles bloqueen el login por error al abrir la app desde cero.
+
+### 2. Optimización del Almacenamiento (App Shell)
+* Uso de un mapeo controlado en la instalación del Service Worker mediante `Promise.all` para asegurar que fallos menores en recursos opcionales no rompan el proceso de instalación y activación de la PWA.
+
+---
+
+## 🎯 Preguntas Clave para la Defensa de Mañana (Machete Técnico)
+
+* **¿Por qué la app no se rompe si apagamos XAMPP?** Porque el `sw.js` intercepta la petición del navegador antes de que salga a la red. Al fallar el fetch físico al puerto local, el Service Worker recurre al método `caches.match()` y sirve el HTML/CSS/JS que guardó previamente durante la instalación.
+* **¿Qué es la mejora progresiva en nuestro proyecto?** Significa que si un usuario entra desde un navegador viejo sin soporte para Service Workers, PulsoUno sigue funcionando perfectamente como un sitio web tradicional. Pero si entra desde un navegador moderno, el sistema "mejora" ofreciendo instalación y soporte offline.
+* **¿Por qué usamos HTTPS / Contexto Seguro?** Porque los Service Workers manejan información sensible (interceptan todo el tráfico de la app). Por seguridad del protocolo, los navegadores bloquean estas APIs a menos que se corra bajo `https://` o en entornos de desarrollo sobre `localhost`.

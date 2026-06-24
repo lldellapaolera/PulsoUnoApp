@@ -27,7 +27,8 @@ return [
         /**
          * Status del config.php/config.ini
          */
-        '/status' => 'pages/kumbia/status'
+        '/status' => 'pages/kumbia/status',
+        '/api-tregua' => 'estudio/tregua'
         
         ],
 ];

@@ -59,6 +59,8 @@ const PRODUCTION = false;
 define('APP_PATH', dirname(__DIR__).'/app/');
 //const APP_PATH = '/path/to/app/';
 
+define('VENDOR_PATH', dirname(APP_PATH, 2).'/vendor/');
+
 /*
  * Define el CORE_PATH
  *

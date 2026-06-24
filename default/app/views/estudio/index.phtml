@@ -1,0 +1,152 @@
+<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+                <span class="fs-4 me-2">🧠</span>
+                <h5 class="fw-bold mb-0" style="color: #111827;">Gestión de Enfoque: División <?= isset($neuro_perfil) ? htmlspecialchars($neuro_perfil->liga_nombre) : '' ?></h5>
+            </div>
+            <span class="badge rounded-pill fw-bold px-3 py-2" style="background-color: #0096d6 !important; color: white;"><?= isset($neuro_perfil) ? number_format($neuro_perfil->xp_semanal) : 0 ?> XP Semanal</span>
+        </div>
+        
+        <p class="text-muted small">Herramientas dinámicas basadas en constancia autónoma para monitorear horas efectivas de estudio y mitigar interrupciones comunes.</p>
+
+        <div class="p-3 bg-light rounded-4 mb-3 text-center">
+            <div class="d-flex justify-content-center align-items-center">
+                <span style="font-size: 2rem; margin-right: 8px;">🔥</span>
+                <span class="fw-bold text-dark fs-2"><?= isset($neuro_perfil) ? $neuro_perfil->racha_actual : 0 ?></span>
+                <span class="text-muted fw-bold ms-2 fs-5">Días Activos</span>
+            </div>
+            <div class="text-muted extra-small mt-1" style="font-size: 0.75rem;">Tu constancia histórica máxima: <span class="fw-semibold text-secondary"><?= isset($neuro_perfil) ? $neuro_perfil->racha_maxima : 0 ?> días</span></div>
+        </div>
+
+        <div class="p-3 bg-danger-subtle rounded-4 mb-3 border-start border-4 border-danger">
+            <h6 class="fw-bold text-danger-emphasis mb-1">🚨 Pausa de Mitigación de Pérdida de Enfoque</h6>
+            <p class="text-muted extra-small mb-2" style="font-size: 0.75rem;">Si sentís agotamiento o detectás que estás por postergar tus guías de estudio, registrá un intervalo controlado.</p>
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-sm btn-danger fw-bold rounded-3 px-3" onclick="solicitarTregua('Redes Sociales o Movil')">Distracción Digital</button>
+                <button type="button" class="btn btn-sm btn-outline-danger fw-bold rounded-3 px-3" onclick="solicitarTregua('Obligaciones Externas')">Asuntos Externos</button>
+                <button type="button" class="btn btn-sm btn-outline-danger fw-bold rounded-3 px-3" onclick="solicitarTregua('Fatiga o Cansancio')">Cansancio General</button>
+            </div>
+        </div>
+
+        <div class="p-3 bg-light rounded-4">
+            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.9rem;">⏱️ Cargar Sesión de Estudio Efectuada</h6>
+            <div class="row g-2">
+                <div class="col-8">
+                    <select id="neuro-minutos" class="form-select border-light-subtle bg-white text-dark small" style="font-size: 0.85rem;">
+                        <option value="15">Sesión Corta: 15 minutos (+10 XP)</option>
+                        <option value="30" selected>Sesión Regular: 30 minutos (Meta Diaria +20 XP)</option>
+                        <option value="60">Enfoque Profundo: 60 minutos (+40 XP)</option>
+                    </select>
+                </div>
+                <div class="col-4">
+                    <button type="button" id="btn-neuro-estudio" class="btn btn-success w-100 fw-bold small text-white" style="font-size: 0.85rem; background-color: #198754; border-color: #198754;">
+                        Cargar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+    <div class="card-body p-4">
+        <h5 class="fw-bold mb-3" style="color: #111827;">🏆 Clasificación de Grupo Semanal</h5>
+        <p class="text-muted small">Panel comparativo de constancia horaria frente a tu misma división.</p>
+
+        <div class="list-group list-group-flush" style="max-height: 350px; overflow-y: auto;">
+            <?php if (isset($neuro_ranking) && count($neuro_ranking) > 0): ?>
+                <?php foreach ($neuro_ranking as $index => $puesto): 
+                    $esPropio = ((int)$puesto->usuario_id === (int)Auth::get_active_identity()['id']);
+                    $itemBg = $esPropio ? 'bg-primary-subtle border-start border-4 border-primary' : 'bg-light';
+                ?>
+                    <div class="list-group-item d-flex justify-content-between align-items-center rounded-3 p-3 mb-2 <?= $itemBg ?> border-0">
+                        <div class="d-flex align-items-center">
+                            <span class="fw-bold text-muted me-2" style="font-size: 0.85rem; width: 25px; text-align: center;"><?= $index + 1 ?>°</span>
+                            <div>
+                                <span class="fw-bold text-dark d-block <?= $esPropio ? 'text-primary' : '' ?>" style="font-size: 0.85rem;">
+                                    <?= htmlspecialchars($puesto->nombre . ' ' . $puesto->apellido) ?><?= $esPropio ? ' (Vos)' : '' ?>
+                                </span>
+                                <span class="text-muted extra-small" style="font-size: 0.7rem;">🔥 Racha: <?= $puesto->racha_actual ?> días</span>
+                            </div>
+                        </div>
+                        <span class="badge bg-secondary rounded-pill fw-bold text-dark bg-opacity-10 px-2.5 py-1.5" style="font-size: 0.75rem;"><?= $puesto->xp_semanal ?> XP</span>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="text-muted small mb-0 text-center py-2">No se registra actividad esta semana en este grupo.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('btn-neuro-estudio').addEventListener('click', function() {
+    const mins = document.getElementById('neuro-minutos').value;
+    
+    // PHP define la base y JavaScript concatena de forma segura de manera absoluta
+    const urlBase = '<?= PUBLIC_PATH ?>'.replace(/\/+$/, ''); 
+    const urlLimpia = window.location.origin + urlBase + '/estudio/registrar_estudio/' + mins;
+    
+    console.log("Petición enviada a:", urlLimpia);
+    
+    fetch(urlLimpia, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'include'
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Código de respuesta del servidor: ' + res.status);
+        }
+        return res.json();
+    })
+    .then(data => {
+        alert(data.message);
+        if(data.status !== 'error') {
+            location.reload();
+        }
+    })
+    .catch(err => {
+        console.error('Error detectado en fetch:', err);
+        alert('Ocurrió un error al procesar el bloque. Revisá la consola (F12).');
+    });
+});
+function solicitarTregua(motivo) {
+    if (confirm('¿Desea registrar una pausa regulada debido a: ' + motivo + '?')) {
+        const urlBase = '<?= PUBLIC_PATH ?>'.replace(/\/+$/, '');
+        
+        // Mapeamos a una sola palabra clave limpia para evitar conflictos de caracteres en la URL
+        let tipoPausa = 'distracion';
+        if (motivo.includes('Externas')) tipoPausa = 'externo';
+        if (motivo.includes('Fatiga')) tipoPausa = 'cansancio';
+
+        const urlLimpia = window.location.origin + urlBase + '/estudio/registrar_escape/' + tipoPausa;
+
+        console.log("Despachando escape por GET a:", urlLimpia);
+
+        fetch(urlLimpia, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'include'
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Código: ' + res.status);
+            return res.json();
+        })
+        .then(data => {
+            alert(data.message);
+            if(data.status !== 'error') {
+                location.reload();
+            }
+        })
+        .catch(err => {
+            console.error('Error detectado en escape:', err);
+            alert('No se pudo establecer la pausa de enfoque.');
+        });
+    }
+}
+</script>

@@ -1,0 +1,68 @@
+<div class="container mt-4" style="max-width: 650px;">
+    <div class="card card-login bg-white p-3">
+        <div class="card-body">
+            <h3 class="fw-bold text-dark mb-4"><?= $usuario->id ? 'Editar Usuario' : 'Nuevo Usuario' ?></h3>
+
+            <form action="<?= PUBLIC_PATH ?>admin_usuarios/guardar" method="POST">
+                
+                <input type="hidden" name="usuario[id]" value="<?= $usuario->id ?>">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Legajo / Documento</label>
+                        <input type="text" name="usuario[legajo]" class="form-control form-control-lg rounded-3 fs-6" required placeholder="Ej: UNO-1234" value="<?= $usuario->legajo ?>">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Correo Electrónico</label>
+                        <input type="email" name="usuario[email]" class="form-control form-control-lg rounded-3 fs-6" required placeholder="ejemplo@uno.edu.ar" value="<?= $usuario->email ?>">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Nombre</label>
+                        <input type="text" name="usuario[nombre]" class="form-control form-control-lg rounded-3 fs-6" required value="<?= $usuario->nombre ?>">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Apellido</label>
+                        <input type="text" name="usuario[apellido]" class="form-control form-control-lg rounded-3 fs-6" required value="<?= $usuario->apellido ?>">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Teléfono</label>
+                        <input type="text" name="usuario[telefono]" class="form-control form-control-lg rounded-3 fs-6" placeholder="Ej: 1123456789" value="<?= $usuario->telefono ?>">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Localidad</label>
+                        <input type="text" name="usuario[localidad]" class="form-control form-control-lg rounded-3 fs-6" placeholder="Ej: Merlo" value="<?= $usuario->localidad ?>">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Rol del Usuario</label>
+                    <select name="usuario[rol]" class="form-select form-control-lg rounded-3 fs-6" required>
+                        <option value="alumno" <?= $usuario->rol == 'alumno' ? 'selected' : '' ?>>Alumno</option>
+                        <option value="profesor" <?= $usuario->rol == 'profesor' ? 'selected' : '' ?>>Profesor</option>
+                        <option value="administrador" <?= $usuario->rol == 'administrador' ? 'selected' : '' ?>>Administrador</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-semibold text-secondary">Contraseña</label>
+                    <input type="password" name="usuario[password]" class="form-control form-control-lg rounded-3 fs-6" placeholder="<?= $usuario->id ? 'Dejar en blanco para no cambiar' : '••••••••' ?>" <?= $usuario->id ? '' : 'required' ?>>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-uno w-100 rounded-3 py-2.5 fs-6 shadow-sm">
+                        Guardar Usuario
+                    </button>
+                    <a href="<?= PUBLIC_PATH ?>admin_usuarios" class="btn btn-light w-50 rounded-3 py-2.5 fs-6 border">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

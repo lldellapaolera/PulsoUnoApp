@@ -1,31 +1,75 @@
 <nav class="nav-inferior fixed-bottom navbar-light">
-        <div class="container-fluid h-100 max-width-mobile">
-            <div class="row h-100 text-center align-items-center">
-                
-                <!-- Pestaña Académica / Cursadas -->
-                <div class="col-4 h-100">
-                    <a href="<?= PUBLIC_PATH ?>academico" class="nav-link active">
-                        <div class="icon-wrapper">📊</div>
-                        <span>Cursada</span>
-                    </a>
-                </div>
-                
-                <!-- Pestaña Movilidad / UNO-Pool -->
-                <div class="col-4 h-100">
-                    <a href="<?= PUBLIC_PATH ?>pool" class="nav-link">
-                        <div class="icon-wrapper">🚗</div>
-                        <span>UNO-Pool</span>
-                    </a>
-                </div>
-                
-                <!-- Pestaña Documentos / Apuntes -->
-                <div class="col-4 h-100">
-                    <a href="<?= PUBLIC_PATH ?>documentos" class="nav-link">
-                        <div class="icon-wrapper">📂</div>
-                        <span>Apuntes</span>
-                    </a>
-                </div>
+    <div class="container-fluid h-100 max-width-mobile">
+        <div class="row h-100 text-center align-items-center">
 
+        <?php if (Auth::is_valid()): ?>
+                <div class="col h-100 dropup">
+                    <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="icon-wrapper">🎓</div>
+                        <span style="font-size: 0.75rem;">Académico</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-between shadow border-0 mb-2 p-2 rounded-3 bg-white">
+                        <li>
+                            <a class="dropdown-item py-2 fw-semibold text-secondary" href="<?= PUBLIC_PATH ?>academico">
+                                📊 Cursada
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2 fw-semibold text-secondary" href="<?= PUBLIC_PATH ?>estudio">
+                                🧠 Estudio
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            <?php endif; ?>
+                       
+            <div class="<?= (Auth::is_valid() && Auth::get('rol') === 'administrador') ? 'col' : 'col-3' ?> h-100">
+                <a href="<?= PUBLIC_PATH ?>pool" class="nav-link">
+                    <div class="icon-wrapper">🚗</div>
+                    <span style="font-size: 0.75rem;">UNO-Pool</span>
+                </a>
             </div>
+            
+            <div class="<?= (Auth::is_valid() && Auth::get('rol') === 'administrador') ? 'col' : 'col-3' ?> h-100">
+                <a href="<?= PUBLIC_PATH ?>comunidad" class="nav-link">
+                    <div class="icon-wrapper">🛡️</div>
+                    <span style="font-size: 0.75rem;">Comunidad</span>
+                </a>
+            </div>
+            
+            <div class="<?= (Auth::is_valid() && Auth::get('rol') === 'administrador') ? 'col' : 'col-3' ?> h-100">
+                <a href="<?= PUBLIC_PATH ?>documentos" class="nav-link">
+                    <div class="icon-wrapper">📂</div>
+                    <span style="font-size: 0.75rem;">Apuntes</span>
+                </a>
+            </div>
+
+            <?php if (Auth::is_valid() && Auth::get('rol') === 'administrador'): ?>
+                <div class="col h-100 dropup">
+                    <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="icon-wrapper">⚙️</div>
+                        <span style="font-size: 0.75rem;">Admin</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mb-2 p-2 rounded-3 bg-white">
+                        <li>
+                            <a class="dropdown-item py-2 fw-semibold text-secondary" href="<?= PUBLIC_PATH ?>admin_usuarios">
+                                👥 Usuarios
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2 fw-semibold text-secondary" href="<?= PUBLIC_PATH ?>admin_materias">
+                                📚 Materias
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2 fw-semibold text-secondary" href="<?= PUBLIC_PATH ?>admin_comisiones">
+                                🗓️ Comisiones
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
         </div>
-    </nav>
+    </div>
+</nav>

@@ -1,0 +1,12 @@
+{
+    "intelephense.environment.includePaths": [
+        "vendor",
+        "./vendor",
+        "vendor/google/apiclient/src"
+    ],
+    "intelephense.diagnostics.undefinedTypes": true,
+ "php.workspace.includePaths": [
+        "vendor"
+    ],
+    "php.index.exclude": []   
+}

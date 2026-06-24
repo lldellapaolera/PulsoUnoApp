@@ -38,6 +38,35 @@
 
 <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
     <div class="card-body p-4">
+        <h5 class="fw-bold mb-3" style="color: #111827;">✅ Materias Logradas / Cursadas</h5>
+        <?php if (count($materias_aprobadas) > 0): ?>
+            <div class="row g-2">
+                <?php foreach ($materias_aprobadas as $ap): 
+                    $isPromo = ($ap->estado_materia === 'promocionada');
+                    $badgeStyle = $isPromo ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning-emphasis';
+                ?>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center p-2.5 bg-light rounded-3 border-start border-4 <?= $isPromo ? 'border-success' : 'border-warning' ?>">
+                            <div class="m-3">
+                                <span class="fw-bold text-dark d-block style-title" style="font-size: 0.9rem;"><?= htmlspecialchars($ap->nombre) ?></span>
+                                <span class="text-muted extra-small" style="font-size: 0.75rem;">Código: <?= htmlspecialchars($ap->codigo) ?></span>
+                                <?php if(isset($ap->sede_aula) && !empty($ap->sede_aula)):?><span class="text-muted extra-small" style="font-size: 0.75rem;">; Sede y Aula: <?= htmlspecialchars($ap->sede_aula) ?></span><?php endif; ?>
+                            </div>
+                            <span class="badge <?= $badgeStyle ?> rounded-pill text-capitalize fw-bold px-2.5 py-1.5">
+                                <?= $ap->estado_materia ?> <?= $ap->nota_final ? "({$ap->nota_final})" : '' ?>
+                            </span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p class="text-muted small mb-0">Aún no registrás materias aprobadas o regulares en tu historial.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+    <div class="card-body p-4">
         <div class="d-flex align-items-center mb-3">
             <span class="fs-4 me-2">🧠</span>
             <h5 class="fw-bold mb-0" style="color: #111827;">Simulador de Correlativas</h5>

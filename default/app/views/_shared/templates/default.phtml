@@ -14,51 +14,106 @@ if (!Auth::is_valid()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PulsoUno - Universidad Nacional del Oeste</title>
     
-    <!-- Vinculación del Manifiesto de la PWA -->
     <link rel="manifest" href="<?= PUBLIC_PATH ?>manifest.json">
     <meta name="theme-color" content="#0096d6">
+    <link class="favicon" rel="icon" href="<?= PUBLIC_PATH.'img/favicon.ico' ?>" type="image/x-icon">
     
-    <link rel="icon" href="<?= PUBLIC_PATH.'img/favicon.ico' ?>" type="image/x-icon">
-    
-    <!-- Bootstrap 5.3.3 CSS desde CDN (o local en public/css/) -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/dist/css/bootstrap.min.css" rel="stylesheet"> -->
      <?= Tag::css('bootstrap.min') ?>
-    
-    <!-- Estilos personalizados con la identidad de la UNO -->
-    <style>
-        
-    </style>
-
-    
-    <?= Tag::css('styles') ?>
+     <?= Tag::css('styles') ?>
     
     <?php echo Html::includeCss() ?>
 </head>
 <body>
 
-    <!-- NAVBAR SUPERIOR -->
     <?= View::partial('kumbia/nav_superior') ?>
 
-    <!-- CONTENEDOR DINÁMICO DE VISTAS (Aquí Kumbia renderiza cada pantalla) -->
+    <div id="banner-modo-offline" class="bg-warning text-dark text-center py-1 small fw-bold d-none shadow-sm" style="z-index: 1050; position: relative;">
+        ⚠️ Estás navegando en Modo Offline (Sin conexión). Viendo datos locales mínimos.
+    </div>
+
     <main class="container-fluid py-3 px-3">
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6">
-                <!-- Se inyecta el contenido de las vistas hijas -->
                 <?= View::content() ?>
             </div>
         </div>
     </main>
 
-    <!-- BARRA DE NAVEGACIÓN INFERIOR (Mobile-First / Fija abajo) -->
     <?= View::partial('kumbia/nav_inferior') ?>
 
-    <!-- Bootstrap 5.3.3 JavaScript Bundle -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/dist/js/bootstrap.bundle.min.js"></script> -->
      <?= Tag::js('bootstrap.bundle.min') ?>
-    
-    <!-- Script de inicialización de la PWA (Registro del Service Worker) -->
      <?= Tag::js('app') ?>
-    <!-- <script src="<?php //echo PUBLIC_PATH ?>js/app.js"></script> -->
 
+    <script>
+        // Sincronización del estado de red global para la app activa
+        document.addEventListener("DOMContentLoaded", function() {
+            const bannerOffline = document.getElementById('banner-modo-offline');
+
+            function actualizarBannerRed() {
+                if (!navigator.onLine) {
+                    bannerOffline.classList.remove('d-none');
+                } else {
+                    bannerOffline.classList.add('d-none');
+                }
+            }
+
+            window.addEventListener('online', actualizarBannerRed);
+            window.addEventListener('offline', actualizarBannerRed);
+            actualizarBannerRed(); // Chequeo inicial de carga
+        });
+
+        // Registro estándar del Service Worker
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('<?= PUBLIC_PATH ?>sw.js')
+                .then(function(registration) {
+                    console.log('Service Worker registrado con éxito: ', registration.scope);
+                    return Notification.requestPermission();
+                })
+                .catch(function(err) {
+                    console.error('Fallo en el SW:', err);
+                });
+            });
+        }
+    </script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+    <script>
+    const firebaseConfig = {
+        apiKey: "AIzaSy...",
+        authDomain: "pulsounoapp.firebaseapp.com",
+        projectId: "pulsounoapp",
+        storageBucket: "pulsounoapp.appspot.com",
+        messagingSenderId: "1234567890",
+        appId: "1:1234567890:web:abcdef..."
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    try {
+        const messaging = firebase.messaging();
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('<?= PUBLIC_PATH ?>sw.js')
+            .then((registration) => {
+                messaging.getToken({ 
+                    serviceWorkerRegistration: registration,
+                    vapidKey: 'TU_KEY_PUBLICA_DE_LA_CONSOLA_FIREBASE_WEB'
+                })
+                .then((currentToken) => {
+                    if (currentToken) enviarTokenAlServidor(currentToken);
+                }).catch(console.error);
+            });
+        }
+    } catch(e) { console.warn("Firebase omitido en offline"); }
+
+    function enviarTokenAlServidor(token) {
+        if(!navigator.onLine) return; // Evitar fetch rotos en offline
+        fetch('<?= PUBLIC_PATH ?>notificaciones/guardar_token_fcm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: token })
+        }).catch(() => console.log("Fallo envío de token por red"));
+    }
+    </script>
 </body>
 </html>

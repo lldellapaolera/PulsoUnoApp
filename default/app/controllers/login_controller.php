@@ -21,6 +21,11 @@ class LoginController extends AppController {
             return;
         }
 
+        if(Auth::is_valid()) {
+            Redirect::to('index');
+            return;
+        }
+
         if(Input::hasPost('usuario')) {
             $user=new Usuarios(Input::post('usuario'));
             

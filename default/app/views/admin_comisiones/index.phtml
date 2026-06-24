@@ -1,0 +1,57 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark m-0">Administración de Comisiones</h2>
+        <a href="<?= PUBLIC_PATH ?>admin_comisiones/guardar" class="btn btn-uno rounded-3 shadow-sm">
+             Nueva Comisión
+        </a>
+    </div>
+
+    <?php View::content(); ?>
+
+    <div class="card card-login bg-white border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Materia</th>
+                            <th>Profesor</th>
+                            <th>Período</th>
+                            <th>Días y Horarios</th>
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($listComisiones as $item): ?>
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark"><?= $item->materia_nombre ?></div>
+                                <div class="small text-secondary"><?= $item->materia_codigo ?></div>
+                            </td>
+                            <td><?= $item->prof_apellido . ', ' . $item->prof_nombre ?></td>
+                            <td><?= $item->cuatrimestre ?>° Cuat. (<?= $item->anio ?>)</td>
+                            <td class="text-secondary small fw-semibold"><?= $item->dias_horarios ?></td>
+                            <td class="text-end pe-4">
+                                <a href="<?= PUBLIC_PATH . 'admin_comisiones/alumnos/' . $item->id ?>" class="btn btn-sm btn-outline-primary rounded-2 me-1">
+                                    Alumnos
+                                </a>
+                                <a href="<?= PUBLIC_PATH . 'admin_comisiones/guardar/' . $item->id ?>" class="btn btn-sm btn-outline-secondary rounded-2 me-1">
+                                    Editar
+                                </a>
+                                <a href="<?= PUBLIC_PATH . 'admin_comisiones/eliminar/' . $item->id ?>" class="btn btn-sm btn-outline-danger rounded-2" onclick="return confirm('¿Seguro querés borrar esta comisión?')">
+                                    Borrar
+                                </a>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (count($listComisiones) == 0): ?>
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">No hay comisiones creadas.</td>
+                        </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

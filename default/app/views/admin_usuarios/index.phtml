@@ -1,0 +1,48 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark m-0">Administración de Usuarios</h2>
+        <a href="<?= PUBLIC_PATH ?>admin_usuarios/guardar" class="btn btn-uno rounded-3 shadow-sm">
+            <i class="bi bi-person-plus-fill"></i> Nuevo Usuario
+        </a>
+    </div>
+
+    <?php View::content(); // Para mostrar los mensajes de Flash ?>
+
+    <div class="card card-login bg-white border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Legajo</th>
+                            <th>Nombre y Apellido</th>
+                            <th>Rol</th>
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($listUsuarios as $item): ?>
+                        <tr>
+                            <td class="ps-4 fw-semibold text-secondary"><?= $item->legajo ?></td>
+                            <td><?= $item->apellido . ', ' . $item->nombre ?></td>
+                            <td>
+                                <span class="badge <?= $item->rol == 'administrador' ? 'bg-danger' : 'bg-primary' ?> rounded-pill">
+                                    <?= strtoupper($item->rol) ?>
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="<?= PUBLIC_PATH . 'admin_usuarios/guardar/' . $item->id ?>" class="btn btn-sm btn-outline-secondary rounded-2 me-1">
+                                    Editar
+                                </a>
+                                <a href="<?= PUBLIC_PATH . 'admin_usuarios/eliminar/' . $item->id ?>" class="btn btn-sm btn-outline-danger rounded-2" onclick="return confirm('¿Seguro querés eliminar a este usuario?')">
+                                    Borrar
+                                </a>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

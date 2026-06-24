@@ -1,0 +1,65 @@
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="mb-3">
+        <a href="<?= PUBLIC_PATH . 'admin_comisiones/alumnos/' . $inscripcion->comision_id ?>" class="text-decoration-none text-secondary small fw-bold">
+            ← Volver a alumnos de la comisión
+        </a>
+    </div>
+
+    <div class="card card-login bg-white p-4 border-0 shadow-sm">
+        <div class="card-body">
+            <span class="badge bg-secondary mb-2">Acta de Calificaciones</span>
+            <h4 class="fw-bold text-dark mb-1"><?= $inscripcion->alu_apellido . ', ' . $inscripcion->alu_nombre ?></h4>
+            <p class="text-muted small mb-4">Legajo: <?= $inscripcion->alu_legajo ?> | Materia: <span class="fw-semibold"><?= $inscripcion->materia_nombre ?></span></p>
+
+            <?php View::content(); ?>
+
+            <form action="<?= PUBLIC_PATH . 'admin_comisiones/calificar/' . $inscripcion->id ?>" method="POST">
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Nota Parcial 1</label>
+                        <input type="number" name="calificacion[nota_parcial1]" class="form-control form-control-lg rounded-3 fs-6" 
+                               min="1" max="10" step="0.01" placeholder="Ej: 7.50" value="<?= $inscripcion->nota_parcial1 ?>">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Nota Parcial 2</label>
+                        <input type="number" name="calificacion[nota_parcial2]" class="form-control form-control-lg rounded-3 fs-6" 
+                               min="1" max="10" step="0.01" placeholder="Ej: 8.00" value="<?= $inscripcion->nota_parcial2 ?>">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Nota Trabajos Prácticos</label>
+                        <input type="number" name="calificacion[nota_tps]" class="form-control form-control-lg rounded-3 fs-6" 
+                               min="1" max="10" step="0.01" placeholder="Ej: 9.00" value="<?= $inscripcion->nota_tps ?>">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Nota Final Exam</label>
+                        <input type="number" name="calificacion[nota_final]" class="form-control form-control-lg rounded-3 fs-6" 
+                               min="1" max="10" step="0.01" placeholder="Ej: 4.00" value="<?= $inscripcion->nota_final ?>">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-semibold text-secondary">Condición / Estado de Cursada</label>
+                    <select name="calificacion[estado_materia]" class="form-select form-control-lg rounded-3 fs-6" required>
+                        <option value="cursando" <?= $inscripcion->estado_materia == 'cursando' ? 'selected' : '' ?>>Cursando</option>
+                        <option value="regular" <?= $inscripcion->estado_materia == 'regular' ? 'selected' : '' ?>>Regular</option>
+                        <option value="promocionada" <?= $inscripcion->estado_materia == 'promocionada' ? 'selected' : '' ?>>Promocionada</option>
+                        <option value="libre" <?= $inscripcion->estado_materia == 'libre' ? 'selected' : '' ?>>Libre</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-uno w-100 rounded-3 py-2.5 fs-6 shadow-sm">
+                        Actualizar Acta
+                    </button>
+                    <a href="<?= PUBLIC_PATH ?>admin_comisiones/alumnos/<?= $inscripcion->comision_id ?>" class="btn btn-light w-50 rounded-3 py-2.5 fs-6 border">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
